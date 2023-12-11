@@ -1,0 +1,233 @@
+#settings-container {
+  position: absolute;
+  border: 1px solid #ccc;
+  left: 10px;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  width: 300px;
+}
+
+
+
+.toggle-settings {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  padding: 10px 20px;
+  background-color: #007bff; /* Niebieskie tło */
+  color: white; /* Biały tekst */
+  border: none; /* Brak obramowania */
+  border-radius: 5px; /* Zaokrąglone rogi */
+  font-size: 16px; /* Większa czcionka */
+  cursor: pointer; /* Kursor 'pointer' wskazuje na możliwość kliknięcia */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Cień dla głębi */
+  z-index: 1001; /* Upewniamy się, że przycisk jest nad panelem ustawień */
+  transition: background-color 0.3s; /* Animacja tła przy najechaniu */
+}
+
+.toggle-settings:hover {
+  background-color: #0056b3; /* Ciemniejszy odcień niebieskiego przy najechaniu */
+}
+
+.toggle-settings:focus {
+  outline: none; /* Usunięcie obramowania przy fokusie dla lepszego wyglądu */
+}
+
+/* Kiedy panel ustawień jest otwarty, przycisk może mieć inny styl */
+.toggle-settings.active {
+  background-color: #ffc107; /* Zmiana koloru tła, gdy panel jest otwarty */
+}
+
+
+#settings-container label {
+  display: block;
+  margin-top: 10px;
+}
+
+#settings-container input[type="text"],
+#settings-container input[type="range"] {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.settings-panel {
+  position: fixed;
+  top: 10px; /* Zmień 'top' na większą wartość, jeśli element jest za wysoko */
+  right: 10px; /* Ustaw odpowiednią odległość od prawej krawędzi, aby nie wychodzić poza ekran */
+  z-index: 1000; /* Upewnij się, że panel jest nad innymi elementami */
+  max-width: 90%; /* Nie pozwól okienku być szerszym niż 90% ekranu */
+  box-sizing: border-box; /* Upewnij się, że padding i border są wliczane do szerokości */
+}
+
+@media screen and (max-width: 600px) {
+  .settings-panel {
+    right: 0; /* Przy małych ekranach przylegaj do prawej krawędzi */
+    top: 0; /* Przy małych ekranach przylegaj do górnej krawędzi */
+    max-width: 100%; /* Na małych ekranach pozwól zajmować 100% szerokości */
+    height: 100%; /* Na małych ekranach pozwól zajmować 100% wysokości */
+    overflow-y: auto; /* Włącz przewijanie pionowe, jeśli zawartość przekracza wysokość */
+  }
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+  
+  .container {
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 80%;
+    max-width: 600px;
+  }
+  
+  #question {
+    font-size: 1.25em;
+    font-weight: bold;
+  }
+  
+  .btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 1em;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
+  #answer-buttons .btn {
+    display: block; /* Stack buttons vertically */
+    width: 100%;
+    text-align: left;
+  }
+  
+  #next-button {
+    display: none; /* Hide until an answer is selected */
+    margin-top: 20px;
+  }
+  
+  .correct {
+    background-color: #28a745 !important; /* Green */
+  }
+  
+  .choice {
+    background-color: #7e159e !important; /* Green */
+  }
+
+  .wrong {
+    background-color: #dc3545 !important; /* Red */
+  }
+  
+  #quiz {
+    margin-bottom: 20px;
+  }
+  
+  h2 {
+    text-align: center;
+  }
+  
+  #quiz-summary {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.quiz-heading {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+.quiz-question {
+    background-color: #f7f7f7;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-left: 5px solid #007bff; /* Niebieski akcent po lewej stronie */
+    border-radius: 5px;
+    
+}
+
+.quiz-question-summary {
+  font-size: 1.25em; /* Powiększenie tekstu pytań */
+  margin-bottom: 10px; /* Dodanie odstępu poniżej pytania */
+  font-weight: bold; /* Pogrubienie tekstu pytania */
+  text-align: center;
+}
+
+.quiz-answer-summary {
+  display: block; /* Wyświetl odpowiedzi jako bloki, aby zająć całą szerokość */
+  padding: 10px 15px; /* Dodanie paddingu, aby przypominały przyciski */
+  margin: 5px 0; /* Dodanie marginesu pomiędzy odpowiedziami */
+  background-color: #f7f7f7; /* Jasne tło dla każdej odpowiedzi */
+  border: 1px solid #dcdcdc; /* Subtelna obramówka */
+  border-radius: 5px; /* Zaokrąglenie rogów */
+  text-align: center; /* Wycentrowanie tekstu odpowiedzi */
+}
+
+
+
+.correct-answer-summary {
+  background-color: #0c521c; /* Zielone tło dla poprawnych odpowiedzi */
+  border-color: #c3e6cb; /* Zielona obramówka */
+}
+
+.incorrect-answer-summary {
+  background-color: #8a0712; /* Czerwone tło dla niepoprawnych odpowiedzi */
+  border-color: #f5c6cb; /* Czerwona obramówka */
+}
+
+.unselected-answer-summary {
+  background-color: #96989b; /* Szare tło dla niewybranych odpowiedzi */
+  border-color: #dcdcdc; /* Szara obramówka */
+}
+
+.button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-right: 10px;
+    text-transform: uppercase; /* Duże litery */
+}
+
+.retry-button {
+    background-color: #28a745; /* Zielony */
+    color: white;
+}
+
+.home-button {
+    background-color: #007bff; /* Niebieski */
+    color: white;
+}
+
+.button:hover {
+    opacity: 0.8;
+}
+
+.result {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin-top: 20px;
+}
