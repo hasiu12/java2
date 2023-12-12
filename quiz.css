@@ -81,6 +81,16 @@ body {
   }
   
   .container {
+    max-width: 800px;
+    margin: auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+  .main-quiz-container {
     background-color: white;
     padding: 20px;
     border-radius: 8px;
@@ -139,14 +149,17 @@ body {
   
   #quiz {
     margin-bottom: 20px;
+    display: none;
   }
   
   h2 {
     text-align: center;
   }
-  
+
+
   #quiz-summary {
-    background-color: #fff;
+    max-height: 80vh; /* Adjust as needed */
+    overflow-y: auto; /* Enable vertical scrolling */
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -230,4 +243,89 @@ body {
     font-weight: bold;
     color: #333;
     margin-top: 20px;
+}
+
+
+#quiz-selection {
+  display: flex;
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center-align the flex items */
+  margin-bottom: 20px;
+}
+
+#quiz-selection button,
+#quiz-selection select {
+    padding: 10px 20px;
+    margin: 10px 0; /* Add margin to the top and bottom for spacing */
+    font-size: 1em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 60%; /* Set a width to make buttons and select box uniform */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
+}
+
+
+#quiz-selection button {
+  background-color: #007bff;
+  color: white;
+}
+
+#quiz-selection button:hover,
+#start-quiz-button:hover {
+  background-color: #0056b3;
+}
+
+#question-range {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+#start-quiz-button {
+  background-color: #28a745;
+  color: white;
+}
+
+#start-quiz-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+header h1 {
+  color: #333;
+  text-align: center;
+}
+
+footer {
+  margin-top: 20px;
+}
+
+footer a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.question-counter {
+  font-size: 1em;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+#home-icon-link {
+  position: fixed;
+  top: 10px;
+  left: 10px;
+  display: block;
+  width: 50px; /* Adjust the size as needed */
+  height: 50px; /* Adjust the size as needed */
+}
+
+#home-icon {
+  width: 100%;
+  height: auto;
 }

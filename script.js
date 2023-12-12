@@ -3,7 +3,7 @@ let correctAnswersCount = 0;
 let currentQuizQuestions = [];
 
 // Funkcja do rozpoczęcia quizu i załadowania pytań dla danego przedmiotu
-function startQuiz(subject) {
+function startQuiz(subject, randomize, questionRange) {
     fetch('https://api.jsonbin.io/v3/b/65774c78266cfc3fde6772da', {
         method: 'GET',
         headers: {
@@ -15,14 +15,22 @@ function startQuiz(subject) {
         console.log(data.record);
         currentQuestionIndex = 0;
         correctAnswersCount = 0;
-        // Mieszanie pytań
-        shuffleArray(data.record);
-        
-        // Ograniczenie do pierwszych 15 pomieszanych pytań
-        currentQuizQuestions = data.record.slice(0, 15);
-    
-        showQuestion(currentQuizQuestions[currentQuestionIndex]);
 
+        if (randomize && !questionRange) {
+            shuffleArray(data.record);
+            currentQuizQuestions = data.record.slice(0, 15);
+        } else if (questionRange) {
+            const range = questionRange.split('-');
+            const start = parseInt(range[0], 10) - 1;
+            const end = parseInt(range[1], 10);
+            currentQuizQuestions = data.record.slice(start, end);
+            if (randomize) {
+                shuffleArray(currentQuizQuestions); 
+            }
+        }
+    
+
+        showQuestion(currentQuizQuestions[currentQuestionIndex]);
       })
       .catch(error => {
         console.error('Błąd:', error);
@@ -33,6 +41,21 @@ function startQuiz(subject) {
 
 // Funkcja do wyświetlania pytania i przycisków odpowiedzi
 function showQuestion(question) {
+    const quizContainer = document.getElementById('quiz');
+    quizContainer.style.display = 'block';
+    const nieText = "nie";
+    let nieIndex = question.answers.findIndex(answer => answer.text.toLowerCase() === nieText);
+    if (nieIndex > -1 && nieIndex !== 0) {
+        // Move the 'nie' answer to the beginning
+        let nieAnswer = question.answers.splice(nieIndex, 1)[0];
+        question.answers.unshift(nieAnswer);
+    }
+
+    const noneOfTheAboveIndex = question.answers.findIndex(answer => answer.text === "żadna z powyższych odpowiedzi");
+    if (noneOfTheAboveIndex > -1 && noneOfTheAboveIndex !== question.answers.length - 1) {
+        const noneOfTheAboveAnswer = question.answers.splice(noneOfTheAboveIndex, 1)[0];
+        question.answers.push(noneOfTheAboveAnswer);
+    }
     const questionElement = document.getElementById('question');
     const answerButtonsElement = document.getElementById('answer-buttons');
     // Wyczyść poprzednie pytania i odpowiedzi
@@ -46,6 +69,9 @@ function showQuestion(question) {
       button.addEventListener('click', () => selectAnswer(answer.correct, button, question, answer));
       answerButtonsElement.appendChild(button);
     });
+
+    const questionCounterElement = document.getElementById('question-counter');
+    questionCounterElement.textContent = `Pytanie ${currentQuestionIndex + 1} z ${currentQuizQuestions.length}`;
   }
 
   function selectAnswer(isCorrect, button, question, answer) {
@@ -87,9 +113,6 @@ function showQuestion(question) {
 }
 
 
-
-
-
   // Funkcja do wyświetlania kolejnego pytania lub podsumowania
   function showNextQuestion() {
     // Dodatkowe sprawdzenie, aby uniknąć błędów
@@ -101,6 +124,7 @@ function showQuestion(question) {
 }
   
 function showSummary() {
+
     const quizContainer = document.getElementById('quiz');
     quizContainer.innerHTML = '';
     quizContainer.id = 'quiz-summary';
@@ -114,19 +138,29 @@ function showSummary() {
         const questionElem = document.createElement('div');
         questionElem.className = 'quiz-question-summary';
         questionElem.innerHTML = `<p>Pytanie ${index + 1}: ${question.question}</p>`;
-        
+
         const answersList = document.createElement('div');
+
         question.answers.forEach(answer => {
             const answerDiv = document.createElement('div');
             answerDiv.innerText = answer.text;
             answerDiv.className = 'quiz-answer-summary';
+
+            // Check if the answer was selected by the user
             if (answer === question.selectedAnswer) {
-                answerDiv.classList.add(answer.correct ? 'correct-answer-summary' : 'incorrect-answer-summary');
-            } else {
-                answerDiv.classList.add('unselected-answer-summary');
+                answerDiv.classList.add('selected-answer-summary');
+                // Apply color based on whether the answer is correct or not
+                answerDiv.style.backgroundColor = answer.correct ? 'green' : 'red';
             }
+
+            // Additionally, if the answer is correct, highlight it
+            if (answer.correct) {
+                answerDiv.style.backgroundColor = 'green';
+            }
+
             answersList.appendChild(answerDiv);
         });
+
         questionElem.appendChild(answersList);
         quizContainer.appendChild(questionElem);
     });
@@ -142,11 +176,24 @@ function showSummary() {
     retryButton.onclick = () => location.reload();
     quizContainer.appendChild(retryButton);
 
-    const homeButton = document.createElement('button');
-    homeButton.innerText = 'Powrót do strony głównej';
-    homeButton.className = 'button home-button'; // Klasy dla przycisku
-    homeButton.onclick = () => window.location.href = 'index.html';
-    quizContainer.appendChild(homeButton);
+    let showSelectionButton = document.getElementById('show-selection-button');
+    if (!showSelectionButton) {
+        showSelectionButton = document.createElement('button');
+        showSelectionButton.id = 'show-selection-button';
+        showSelectionButton.textContent = 'Wybierz inny quiz';
+        showSelectionButton.className = 'btn'; // Add styling classes as needed
+        quizContainer.appendChild(showSelectionButton);
+
+        // Attach event listener to this button
+        showSelectionButton.addEventListener('click', () => {
+            // Hide the quiz summary and show the quiz selection
+            document.getElementById('quiz-summary').style.display = 'none';
+            document.getElementById('quiz-selection').style.display = 'flex'; // Or 'flex', 'grid', etc. depending on your layout
+            // Optionally reset the quiz
+            resetQuiz();
+        });
+    }
+    document.getElementById('quiz-summary').scrollIntoView();
 }
 
 
@@ -170,7 +217,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backgroundInput = document.getElementById('background-url');
     const opacityInput = document.getElementById('opacity-range');
     const quizContainer = document.getElementById('quiz');
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.main-quiz-container');
 
     const toggleButton = document.getElementById('toggle-settings');
     const settingsContainer = document.getElementById('settings-container');
@@ -217,13 +264,37 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsContainer.style.display = 'none';
         applySettings(); // Funkcja, która zastosuje ustawienia
     });
+    
+    const quizSelection = document.getElementById('quiz-selection');
+    const randomQuizButton = document.getElementById('random-quiz-button');
+    const startQuizButton = document.getElementById('start-quiz-button');
+
+    // Hide the quiz selection section when any of the quiz start buttons are clicked
+    function hideQuizSelection() {
+        quizSelection.style.display = 'none';
+    }
+
+    randomQuizButton.addEventListener('click', () => {
+        randomize = true;
+        startQuiz('Java', randomize);
+        hideQuizSelection();
+    });
+
+
+    startQuizButton.addEventListener('click', () => {
+        const questionRangeDropdown = document.getElementById('question-range');
+        const selectedRange = questionRangeDropdown.value;
+        randomize = true; // Assuming you want to shuffle regardless of the selected range
+        startQuiz('Java', randomize, selectedRange);
+        hideQuizSelection();
+    });
 });
 
 function applySettings() {
     const backgroundUrl = localStorage.getItem('backgroundUrl');
     const quizOpacity = localStorage.getItem('quizOpacity');
     const quizContainer = document.getElementById('quiz');
-    const container = document.querySelector('.container');
+    const container = document.querySelector('.main-quiz-container');
 
     if (backgroundUrl) {
         document.body.style.backgroundImage = `url(${backgroundUrl})`;
@@ -235,6 +306,10 @@ function applySettings() {
 }
 
 
-
-// Na przykład, rozpoczęcie quizu z matematyki:
-startQuiz('Java');
+function resetQuiz() {
+    // Reset quiz state as needed
+    currentQuestionIndex = 0;
+    correctAnswersCount = 0;
+    currentQuizQuestions = [];
+    // Reset other quiz-related states and UI elements if necessary
+}

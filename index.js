@@ -7,3 +7,7 @@ document.getElementById('study-resources').addEventListener('click', function() 
         resourcesContent.style.display = 'block';
     }
 });
+function toggleResources() {
+    var resourcesContent = document.getElementById('resources-content');
+    resourcesContent.classList.toggle('hide');
+}
