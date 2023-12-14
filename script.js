@@ -36,12 +36,12 @@ function showQuestion(question) {
     const questionElement = document.getElementById('question');
     const answerButtonsElement = document.getElementById('answer-buttons');
     // Wyczyść poprzednie pytania i odpowiedzi
-    questionElement.innerText = question.question;
+    questionElement.innerHTML = question.question;
     answerButtonsElement.innerHTML = '';
     shuffleArray(question.answers);
     question.answers.forEach((answer, index) => {
       const button = document.createElement('button');
-      button.innerText = answer.text;
+      button.innerHTML = answer.text;
       button.classList.add('btn');
       button.addEventListener('click', () => selectAnswer(answer.correct, button, question, answer));
       answerButtonsElement.appendChild(button);
